@@ -14,4 +14,6 @@ public class Terminal {
 
     private String command;
 
+    private String response;
+
 }

@@ -26,6 +26,7 @@ public class File {
     public File(int id, String name, String type, int permission, String contents, int parentId) {
         this.id = id;
         this.name = name;
+        this.type = type;
         this.permission = permission;
         this.contents = contents;
         this.parentId = parentId;
