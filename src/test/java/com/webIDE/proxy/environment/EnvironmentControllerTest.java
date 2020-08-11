@@ -38,7 +38,7 @@ class EnvironmentControllerTest {
                 //.content(environment1)
                 .params(env1)
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andDo(print());
 
     }

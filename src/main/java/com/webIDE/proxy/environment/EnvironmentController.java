@@ -14,7 +14,7 @@ public class EnvironmentController {
     public EnvironmentController() {}
 
     @PostMapping(value = "")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.CREATED)
     public List<Environment> createEnvironment(@RequestParam String name, @RequestParam String value) {
         Environment environment1 = new Environment("PATH", "$PATH:HOME/bin:/usr/app/");
         Environment environment2 = new Environment("DOMAIN1", " https://123.345.678.99");
