@@ -14,11 +14,21 @@ public class Environment {
 
     private String value;
 
+    private String projectId;
+
     @Builder
-    public Environment(String name, String value) {
+    public Environment(String name, String value, String projectId) {
         this.name = name;
         this.value = value;
+        this.projectId = projectId;
     }
 
+    public Environment update(Environment environment) {
+        this.name = name;
+        this.value = value;
+        this.projectId = projectId;
+
+        return this;
+    }
 
 }

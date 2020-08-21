@@ -21,8 +21,14 @@ public class EnvironmentService {
         return environmentRepository.save(environment);
     }
 
-    public List<Environment> updateEnvironment(Environment environment) {
-        return environmentRepository.save(environment);
+    public Environment updateEnvironment(String name, Environment environment) {
+
+        Environment environment1 = environmentRepository.findByName(name);
+
+        return environment1.update(environment);
     }
 
+    public List<Environment> getEnvironments(String projectId) {
+        return environmentRepository.findAllByProjectId(projectId);
+    }
 }

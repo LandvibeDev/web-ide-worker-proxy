@@ -12,12 +12,13 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -45,16 +46,19 @@ class EnvironmentControllerTest {
     @Test
     void test_createEnvironment() throws Exception {
 
-        Environment environment = Environment.builder()
+        //given
+        Environment expected = Environment.builder()
                 .name("PATH")
                 .value("$PATH:HOME/bin:/usr/app/")
+                .projectId("testProject")
                 .build();
 
 
-        String body = objectMapper.writeValueAsString(environment);
+        String body = objectMapper.writeValueAsString(expected);
 
-        given(environmentService.createEnvironment(environment)).willReturn(environment);
+        given(environmentService.createEnvironment(expected)).willReturn(expected);
 
+        //when,then
         mockMvc.perform(post("/env")
                 .content(body)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -63,32 +67,71 @@ class EnvironmentControllerTest {
                 .andExpect(status().isCreated())
                 .andDo(print());
 
-        verify(environmentService,times(1)).createEnvironment(environment);
+        verify(environmentService,times(1)).createEnvironment(expected);
     }
 
+    @Test
     void test_updateEnvironment() throws Exception {
 
+        //given
         String name = "PATH";
-        Environment environment = Environment.builder()
+        Environment expected = Environment.builder()
                 .name(name)
                 .value("$PATH:HOME/bin:/usr/app/")
+                .projectId("testProject")
                 .build();
 
 
-        String body = objectMapper.writeValueAsString(environment);
+        String body = objectMapper.writeValueAsString(expected);
 
-        given(environmentService.updateEnvironment(environment)).willReturn((List<Environment>) environment);
+        given(environmentService.updateEnvironment(name,expected)).willReturn(expected);
 
-        mockMvc.perform(post("/env/{name}", name)
-                .content(body)
+        //when.then
+        mockMvc.perform(put("/env/{name}", name)
+                .content(objectMapper.writeValueAsString(expected))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(content().string(body))
                 .andExpect(status().isOk())
                 .andDo(print());
 
-        verify(environmentService,times(1)).updateEnvironment(environment);
+        verify(environmentService,times(1)).updateEnvironment(name,expected);
 
+    }
+
+    @Test
+    void test_getEnvironments() throws Exception {
+
+        //given
+        String projectId = "testId";
+
+        Environment expected1 = Environment.builder()
+                .name("PATH")
+                .value("$PATH:HOME/bin:/usr/app/")
+                .projectId(projectId)
+                .build();
+
+        Environment expected2 = Environment.builder()
+                .name("DOMAIN")
+                .value("https://123.345.678.99")
+                .projectId(projectId)
+                .build();
+
+        List<Environment> expected = new ArrayList<>();
+        expected.add(expected1);
+        expected.add(expected2);
+
+        String body = objectMapper.writeValueAsString(expected);
+
+        given(environmentService.getEnvironments(projectId)).willReturn(expected);
+
+        //when,then
+        mockMvc.perform(get("/env").queryParam(projectId))
+                .andExpect(content().string(body))
+                .andExpect(status().isOk())
+                .andDo(print());
+
+        verify(environmentService,times(1)).getEnvironments(projectId);
     }
 
 }

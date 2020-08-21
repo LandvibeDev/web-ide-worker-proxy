@@ -26,10 +26,14 @@ public class EnvironmentController {
 
     @PutMapping(value = "/{name}", produces = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public List<Environment> updateEnvironment(@PathVariable String name, @RequestBody Environment environment) {
-        environment.setName(name);
+    public Environment updateEnvironment(@PathVariable String name, @RequestBody Environment environment) {
+        return environmentService.updateEnvironment(name, environment);
+    }
 
-        return environmentService.updateEnvironment(environment);
+    @GetMapping(value = "" ,produces = "application/json")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Environment> getEnvironments(@RequestParam String projectId) {
+        return environmentService.getEnvironments(projectId);
     }
 
 }
